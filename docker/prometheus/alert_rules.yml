@@ -1,0 +1,112 @@
+groups:
+  - name: ai_platform_alerts
+    rules:
+      # High CPU Usage
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 5 minutes on {{ $labels.instance }}"
+
+      # High Memory Usage
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% for more than 5 minutes on {{ $labels.instance }}"
+
+      # High Disk Usage
+      - alert: HighDiskUsage
+        expr: (1 - (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"})) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High disk usage detected"
+          description: "Disk usage is above 90% for more than 5 minutes on {{ $labels.instance }}"
+
+      # Training Job Failed
+      - alert: TrainingJobFailed
+        expr: increase(training_jobs_failed_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Training job failed"
+          description: "{{ $value }} training job(s) have failed in the last 5 minutes"
+
+      # High Training Queue Length
+      - alert: HighTrainingQueueLength
+        expr: training_jobs_queued > 10
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High training queue length"
+          description: "Training queue has {{ $value }} jobs waiting for more than 10 minutes"
+
+      # GPU Memory High Usage
+      - alert: HighGPUMemoryUsage
+        expr: DCGM_FI_DEV_MEM_COPY_UTIL > 90
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High GPU memory usage"
+          description: "GPU memory usage is above 90% on {{ $labels.gpu }}"
+
+      # Backend Service Down
+      - alert: BackendServiceDown
+        expr: up{job="ai-platform-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend service is down"
+          description: "AI Platform backend service has been down for more than 1 minute"
+
+      # Database Connection Issues
+      - alert: DatabaseConnectionIssues
+        expr: mongodb_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database connection issues"
+          description: "MongoDB connection has been down for more than 2 minutes"
+
+      # Redis Connection Issues
+      - alert: RedisConnectionIssues
+        expr: redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis connection issues"
+          description: "Redis connection has been down for more than 2 minutes"
+
+      # Model Inference High Latency
+      - alert: ModelInferenceHighLatency
+        expr: histogram_quantile(0.95, rate(model_inference_duration_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High model inference latency"
+          description: "95th percentile inference latency is above 5 seconds for {{ $labels.model_name }}"
+
+      # Low Model Accuracy
+      - alert: LowModelAccuracy
+        expr: model_accuracy < 0.7
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Low model accuracy detected"
+          description: "Model {{ $labels.model_name }} accuracy has dropped below 70%"

@@ -40,7 +40,7 @@ HOST=0.0.0.0
 PORT=8000
 
 # Security
-SECRET_KEY=$(openssl rand -hex 32)
+SECRET_KEY=$(openssl rand -hex 32 2>/dev/null || python3 -c "import secrets; print(secrets.token_hex(32))")
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 

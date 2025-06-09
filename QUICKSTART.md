@@ -34,6 +34,8 @@ cd ai-platform
 - 前端界面: http://localhost:3000
 - API文档: http://localhost:8000/docs
 - MinIO控制台: http://localhost:9001
+- Prometheus监控: http://localhost:9090
+- Grafana仪表板: http://localhost:3001
 
 ### 首次使用
 
@@ -153,7 +155,8 @@ npm start
 ### 常见问题
 
 1. **端口冲突**
-   - 检查端口 3000, 8000, 27017, 6379, 9000 是否被占用
+   - 检查端口 3000, 3001, 8000, 27017, 6379, 9000, 9001, 9090, 9100 是否被占用
+   - 使用命令检查: `lsof -i :端口号` 或 `netstat -an | grep 端口号`
    - 修改 docker-compose.yml 中的端口映射
 
 2. **内存不足**
@@ -167,6 +170,22 @@ npm start
 4. **GPU支持**
    - 安装 NVIDIA Docker runtime
    - 修改 docker-compose.yml 添加GPU支持
+
+5. **服务启动失败**
+   - 检查Docker服务是否运行: `docker info`
+   - 检查Docker Compose版本: `docker-compose --version`
+   - 清理Docker缓存: `docker system prune -f`
+   - 重新构建镜像: `docker-compose build --no-cache`
+
+6. **数据库连接问题**
+   - 确保MongoDB容器正常运行: `docker-compose ps mongodb`
+   - 检查MongoDB日志: `docker-compose logs mongodb`
+   - 验证连接字符串中的用户名密码
+
+7. **前端无法访问后端**
+   - 检查CORS配置
+   - 确认API URL配置正确
+   - 检查网络连接: `curl http://localhost:8000/health`
 
 ### 日志查看
 ```bash

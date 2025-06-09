@@ -82,7 +82,7 @@ services:
       dockerfile: Dockerfile
     container_name: ai-platform-celery-worker
     restart: unless-stopped
-    command: celery -A app.core.celery worker --loglevel=info --concurrency=2
+    command: celery -A app.core.celery.celery_app worker --loglevel=info --concurrency=2
     environment:
       - MONGODB_URL=mongodb://admin:password123@mongodb:27017/ai_platform?authSource=admin
       - REDIS_URL=redis://redis:6379

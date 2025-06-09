@@ -11,6 +11,10 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure pip to use Alibaba Cloud mirror for faster downloads
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
+    pip config set global.trusted-host mirrors.aliyun.com
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 

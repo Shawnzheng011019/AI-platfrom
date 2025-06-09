@@ -5,11 +5,11 @@ global:
 rule_files:
   - "alert_rules.yml"
 
-alerting:
-  alertmanagers:
-    - static_configs:
-        - targets:
-          - alertmanager:9093
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
 
 scrape_configs:
   # AI Platform Backend
@@ -20,13 +20,13 @@ scrape_configs:
     scrape_interval: 10s
     scrape_timeout: 5s
 
-  # AI Platform Celery Worker
-  - job_name: 'ai-platform-celery'
-    static_configs:
-      - targets: ['celery-worker:8002']
-    metrics_path: '/metrics'
-    scrape_interval: 10s
-    scrape_timeout: 5s
+  # AI Platform Celery Worker (disabled - no metrics endpoint configured)
+  # - job_name: 'ai-platform-celery'
+  #   static_configs:
+  #     - targets: ['celery-worker:8002']
+  #   metrics_path: '/metrics'
+  #   scrape_interval: 10s
+  #   scrape_timeout: 5s
 
   # System Metrics (Node Exporter)
   - job_name: 'node-exporter'
@@ -34,23 +34,23 @@ scrape_configs:
       - targets: ['node-exporter:9100']
     scrape_interval: 15s
 
-  # GPU Metrics (NVIDIA DCGM Exporter)
-  - job_name: 'dcgm-exporter'
-    static_configs:
-      - targets: ['dcgm-exporter:9400']
-    scrape_interval: 15s
+  # GPU Metrics (NVIDIA DCGM Exporter) - disabled, not configured
+  # - job_name: 'dcgm-exporter'
+  #   static_configs:
+  #     - targets: ['dcgm-exporter:9400']
+  #   scrape_interval: 15s
 
-  # MongoDB Metrics
-  - job_name: 'mongodb-exporter'
-    static_configs:
-      - targets: ['mongodb-exporter:9216']
-    scrape_interval: 30s
+  # MongoDB Metrics - disabled, exporter not configured
+  # - job_name: 'mongodb-exporter'
+  #   static_configs:
+  #     - targets: ['mongodb-exporter:9216']
+  #   scrape_interval: 30s
 
-  # Redis Metrics
-  - job_name: 'redis-exporter'
-    static_configs:
-      - targets: ['redis-exporter:9121']
-    scrape_interval: 30s
+  # Redis Metrics - disabled, exporter not configured
+  # - job_name: 'redis-exporter'
+  #   static_configs:
+  #     - targets: ['redis-exporter:9121']
+  #   scrape_interval: 30s
 
   # MinIO Metrics
   - job_name: 'minio'
@@ -65,18 +65,18 @@ scrape_configs:
       - targets: ['localhost:9090']
     scrape_interval: 30s
 
-  # Training Job Metrics
-  - job_name: 'training-jobs'
-    static_configs:
-      - targets: ['backend:8001']
-    metrics_path: '/api/v1/monitoring/training-metrics'
-    scrape_interval: 30s
-    scrape_timeout: 10s
+  # Training Job Metrics - disabled until metrics endpoints are implemented
+  # - job_name: 'training-jobs'
+  #   static_configs:
+  #     - targets: ['backend:8001']
+  #   metrics_path: '/api/v1/monitoring/training-metrics'
+  #   scrape_interval: 30s
+  #   scrape_timeout: 10s
 
-  # Model Performance Metrics
-  - job_name: 'model-performance'
-    static_configs:
-      - targets: ['backend:8001']
-    metrics_path: '/api/v1/monitoring/model-metrics'
-    scrape_interval: 60s
-    scrape_timeout: 15s
+  # Model Performance Metrics - disabled until metrics endpoints are implemented
+  # - job_name: 'model-performance'
+  #   static_configs:
+  #     - targets: ['backend:8001']
+  #   metrics_path: '/api/v1/monitoring/model-metrics'
+  #   scrape_interval: 60s
+  #   scrape_timeout: 15s
